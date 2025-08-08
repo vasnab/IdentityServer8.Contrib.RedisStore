@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Ali Bazzi and vasnab</authors>
+    <owners>Ali Bazzi and vasnab</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Add support to use already established connection through ConnectionMultiplexer</releaseNotes>
+    <copyright>Copyright 2025</copyright>
+    <tags>IdentityServer IdentityServer8 Redis Store</tags>
+  </metadata>
+</package>

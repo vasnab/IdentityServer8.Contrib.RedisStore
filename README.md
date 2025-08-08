@@ -1,14 +1,16 @@
-![Automated tests](https://github.com/AliBazzi/IdentityServer4.Contrib.RedisStore/workflows/Automated%20tests/badge.svg)
+![Automated tests](https://github.com/vasnab/IdentityServer8.Contrib.RedisStore/workflows/Automated%20tests/badge.svg)
 
-# IdentityServer4.Contrib.RedisStore
+This is a fork of AliBazzi project to bump IdentityServer .NET version to 8
 
-IdentityServer4.Contrib.RedisStore is a persistence layer using [Redis](https://redis.io) DB for operational data and for caching capability for Identity Server 4. Specifically, this store provides implementation for [IPersistedGrantStore](http://docs.identityserver.io/en/release/topics/deployment.html#operational-data) and [ICache<T>](http://docs.identityserver.io/en/release/topics/startup.html#caching).
+# IdentityServer8.Contrib.RedisStore
+
+IdentityServer8.Contrib.RedisStore is a persistence layer using [Redis](https://redis.io) DB for operational data and for caching capability for Identity Server 8. Specifically, this store provides implementation for [IPersistedGrantStore](https://identityserver8.readthedocs.io/en/latest/topics/deployment.html#operational-data) and [ICache<T>](https://identityserver8.readthedocs.io/en/latest/topics/startup.html#caching).
 
 ## How to use
 
 You need to install the [nuget package](https://www.nuget.org/packages/IdentityServer4.Contrib.RedisStore)
 
-then you can inject the operational store in the Identity Server 4 Configuration at startup using one of the overloads of `AddOperationalStore`:
+then you can inject the operational store in the Identity Server 8 Configuration at startup using one of the overloads of `AddOperationalStore`:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -111,7 +113,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
-In this previous snippet, registration of caching capability are added for Client Store, Resource Store and Cors Policy Service, and it's registered for [Entity Framework stores](https://github.com/IdentityServer/IdentityServer4/tree/main/src/EntityFramework.Storage) in this case, but if you have your own Stores you should register them here in order to allow the caching for these specific stores.
+In this previous snippet, registration of caching capability are added for Client Store, Resource Store and Cors Policy Service, and it's registered for [Entity Framework stores](https://github.com/alexhiggins732/IdentityServer8/tree/master/src/EntityFramework.Storage) in this case, but if you have your own Stores you should register them here in order to allow the caching for these specific stores.
 
 > Note: operational store and caching are not related, you can use them separately or combined.
 
@@ -119,7 +121,7 @@ In this previous snippet, registration of caching capability are added for Clien
 
 ## the solution approach
 
-the solution was approached based on how the [SQL Store](https://github.com/IdentityServer/IdentityServer4/tree/main/src/EntityFramework.Storage) storing the operational data, but the concept of Redis as a NoSQL db is totally different than relational db concepts, all the operational data stores implement the following [IPersistedGrantStore](https://github.com/IdentityServer/IdentityServer4/blob/main/src/Storage/src/Stores/IPersistedGrantStore.cs) interface:
+the solution was approached based on how the [SQL Store](https://github.com/alexhiggins732/IdentityServer8/tree/master/src/EntityFramework.Storage) storing the operational data, but the concept of Redis as a NoSQL db is totally different than relational db concepts, all the operational data stores implement the following [IPersistedGrantStore](https://github.com/alexhiggins732/IdentityServer8/blob/master/src/Storage/src/Stores/IPersistedGrantStore.cs) interface:
 
 ```csharp
 public interface IPersistedGrantStore
@@ -156,7 +158,7 @@ for more information on data structures used to store the grant please refer to 
 
 > Note: PersistedGrantFilter combinations are not all covered by sets persisted in Redis, if the combination used to be not mapping to an already existing set key, then the retrieval for grants will fallback to Key(SubjectId) -> Key, and the evaluation of the filter will happen on client side.
 
-since Redis has a [key Expiration](https://redis.io/commands/expire) feature based on a defined date time or time span, and to not implement a logic similar to SQL store implementation for [cleaning up the store](http://docs.identityserver.io/en/release/quickstarts/8_entity_framework.html) periodically from dangling grants, the store uses the key expiration of Redis while storing entries based on the following criteria:
+since Redis has a [key Expiration](https://redis.io/commands/expire) feature based on a defined date time or time span, and to not implement a logic similar to SQL store implementation for [cleaning up the store](https://identityserver8.readthedocs.io/en/latest/quickstarts/5_entityframework.html) periodically from dangling grants, the store uses the key expiration of Redis while storing entries based on the following criteria:
 
 1. for Key of the grant, the expiration is straight forward, it's set on the StringSet Redis operation as defined by identity server on the grant object.
 
