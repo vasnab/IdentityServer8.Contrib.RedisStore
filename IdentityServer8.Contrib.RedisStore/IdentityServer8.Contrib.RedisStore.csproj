@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Description>Redis Store for operational data and for Caching of Identity Server 4</Description>
+    <Description>Redis Store for operational data and for Caching of Identity Server 8</Description>
     <Authors>Ali Bazzi and vasnab</Authors>
     <Company>Ali Bazzi and vasnab</Company>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
@@ -19,6 +19,10 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Title>IdentityServer8.Contrib.RedisStore</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/vasnab/IdentityServer8.Contrib.RedisStore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +49,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="icon.jpg" Pack="true" PackagePath="\" />
   </ItemGroup>
 
