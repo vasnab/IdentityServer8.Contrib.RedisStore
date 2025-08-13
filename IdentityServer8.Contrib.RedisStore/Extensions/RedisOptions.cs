@@ -58,7 +58,7 @@ namespace IdentityServer8.Contrib.RedisStore.Extensions
         {
             get
             {
-                return string.IsNullOrEmpty(_keyPrefix) ? _keyPrefix : $"{_keyPrefix}:";
+                return string.IsNullOrWhiteSpace(_keyPrefix) ? _keyPrefix : $"{_keyPrefix}:";
             }
             set
             {
@@ -83,7 +83,7 @@ namespace IdentityServer8.Contrib.RedisStore.Extensions
                     }
 
                     // otherwise we must make our own connection
-                    return string.IsNullOrEmpty(RedisConnectionString)
+                    return string.IsNullOrWhiteSpace(RedisConnectionString)
                         ? ConnectionMultiplexer.Connect(ConfigurationOptions)
                         : ConnectionMultiplexer.Connect(RedisConnectionString);
                 });

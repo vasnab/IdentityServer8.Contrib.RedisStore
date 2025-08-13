@@ -35,7 +35,7 @@ namespace IdentityServer8.Contrib.RedisStore.Extensions
         {
             get
             {
-                return string.IsNullOrEmpty(_keyPrefix) ? _keyPrefix : $"{_keyPrefix}:";
+                return string.IsNullOrWhiteSpace(_keyPrefix) ? _keyPrefix : $"{_keyPrefix}:";
             }
             set
             {

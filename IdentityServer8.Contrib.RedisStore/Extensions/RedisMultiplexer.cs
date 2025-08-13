@@ -16,7 +16,7 @@ namespace IdentityServer8.Contrib.RedisStore.Extensions
 
         private void GetDatabase()
         {
-            Database = RedisOptions.Multiplexer.GetDatabase(string.IsNullOrEmpty(RedisOptions.RedisConnectionString) ? -1 : RedisOptions.Db);
+            Database = RedisOptions.Multiplexer.GetDatabase(string.IsNullOrWhiteSpace(RedisOptions.RedisConnectionString) ? -1 : RedisOptions.Db);
         }
 
         internal T RedisOptions { get; }

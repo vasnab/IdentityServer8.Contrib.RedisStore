@@ -4,7 +4,6 @@ using IdentityServer8.Models;
 using IdentityServer8.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
@@ -56,7 +55,7 @@ namespace IdentityServer8.Contrib.RedisStore.Stores
                 var data = ConvertToJson(grant);
                 var grantKey = GetKey(grant.Key);
                 var expiresIn = grant.Expiration - clock.UtcNow;
-                if (!string.IsNullOrEmpty(grant.SubjectId))
+                if (!string.IsNullOrWhiteSpace(grant.SubjectId))
                 {
                     var setKeyforType = GetSetKeyWithType(grant.SubjectId, grant.ClientId, grant.Type);
                     var setKeyforSubject = GetSetKey(grant.SubjectId);
@@ -74,13 +73,13 @@ namespace IdentityServer8.Contrib.RedisStore.Stores
                     transaction.SetAddAsync(setKeyforSubject, grantKey);
                     transaction.SetAddAsync(setKeyforClient, grantKey);
                     transaction.SetAddAsync(setKeyforType, grantKey);
-                    if (!grant.SessionId.IsNullOrEmpty())
+                    if (!string.IsNullOrWhiteSpace(grant.SessionId))
                         transaction.SetAddAsync(setKetforSession, grantKey);
                     if ((ttlOfSubjectSet.Result ?? TimeSpan.Zero) <= expiresIn)
                         transaction.KeyExpireAsync(setKeyforSubject, expiresIn);
                     if ((ttlOfClientSet.Result ?? TimeSpan.Zero) <= expiresIn)
                         transaction.KeyExpireAsync(setKeyforClient, expiresIn);
-                    if (!grant.SessionId.IsNullOrEmpty() && (ttlofSessionSet.Result ?? TimeSpan.Zero) <= expiresIn)
+                    if (!string.IsNullOrWhiteSpace(grant.SessionId) && (ttlofSessionSet.Result ?? TimeSpan.Zero) <= expiresIn)
                         transaction.KeyExpireAsync(setKetforSession, expiresIn);
                     transaction.KeyExpireAsync(setKeyforType, expiresIn);
                     await transaction.ExecuteAsync();
@@ -203,7 +202,7 @@ namespace IdentityServer8.Contrib.RedisStore.Stores
         }
 
         protected virtual string GetSetKey(PersistedGrantFilter filter) =>
-            (!filter.ClientId.IsNullOrEmpty(), !filter.SessionId.IsNullOrEmpty(), !filter.Type.IsNullOrEmpty()) switch
+            (!string.IsNullOrWhiteSpace(filter.ClientId), !string.IsNullOrWhiteSpace(filter.SessionId), !string.IsNullOrWhiteSpace(filter.Type)) switch
             {
                 (true, true, false) => GetSetKeyWithSession(filter.SubjectId, filter.ClientId, filter.SessionId),
                 (true, _, false) => GetSetKey(filter.SubjectId, filter.ClientId),
@@ -213,10 +212,10 @@ namespace IdentityServer8.Contrib.RedisStore.Stores
 
         protected bool IsMatch(PersistedGrant grant, PersistedGrantFilter filter)
         {
-            return (filter.SubjectId.IsNullOrEmpty() ? true : grant.SubjectId == filter.SubjectId)
-                && (filter.ClientId.IsNullOrEmpty() ? true : grant.ClientId == filter.ClientId)
-                && (filter.SessionId.IsNullOrEmpty() ? true : grant.SessionId == filter.SessionId)
-                && (filter.Type.IsNullOrEmpty() ? true : grant.Type == filter.Type);
+            return (string.IsNullOrWhiteSpace(filter.SubjectId) ? true : grant.SubjectId == filter.SubjectId)
+                && (string.IsNullOrWhiteSpace(filter.ClientId) ? true : grant.ClientId == filter.ClientId)
+                && (string.IsNullOrWhiteSpace(filter.SessionId) ? true : grant.SessionId == filter.SessionId)
+                && (string.IsNullOrWhiteSpace(filter.Type) ? true : grant.Type == filter.Type);
         }
 
         #region Json
